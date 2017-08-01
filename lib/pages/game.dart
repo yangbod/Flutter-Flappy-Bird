@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 
@@ -166,10 +167,12 @@ class GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
 
     void flap() {
+      this.setState(() {
+        bottom = 250.0;
+        new Timer(new Duration(milliseconds: 100), () => bottom = 0.0);
+      });
       if (_characterAnimationController.isAnimating) {
-        this.setState(() {
-          // bottom = 0.0;
-        });
+
         print(_characterAnimationController.value);
         _characterAnimationController.stop();
         _characterAnimationController.forward(from: 0.0);
@@ -230,15 +233,10 @@ class GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                 // )
                 new AnimatedPositioned(
                   child: new Container(
-                    child: new SlideTransition(
-                      child: new Container(
-                        child: char,
-                      ),
-                      position: _characterPosition,
-                    ),
+                    child: char
                   ),
-                  duration: new Duration(seconds: 3),
-                  curve: Curves.linear,
+                  duration: new Duration(seconds: 1),
+                  curve: Curves.easeIn,
                   bottom: bottom,
                 )
               ],
