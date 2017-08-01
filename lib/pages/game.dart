@@ -17,7 +17,7 @@ class GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   static final GlobalKey<CharacterState> characterKey = new GlobalKey<CharacterState>();
   Character char;
 
-  double charYPos = 0.0;
+  double bottom = 500.0;
 
   AnimationController _characterAnimationController;
   Animation<FractionalOffset> _characterPosition;
@@ -54,7 +54,7 @@ class GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
     _characterPosition = new FractionalOffsetTween(
       begin: const FractionalOffset(0.0, 0.0),
-      end: const FractionalOffset(0.0, -0.2),
+      end: const FractionalOffset(0.0, -10.0),
     ).animate(new CurvedAnimation(
       parent: _characterAnimationController,
       curve: Curves.easeOut,
@@ -144,6 +144,9 @@ class GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         if (status == AnimationStatus.completed) {
           _controllers[1].forward(from: 0.0);
           _controllers[3].forward(from: 0.0);
+          this.setState(() {
+            bottom = 0.0;
+          });
         }
       })
     );
@@ -165,7 +168,7 @@ class GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     void flap() {
       if (_characterAnimationController.isAnimating) {
         this.setState(() {
-          charYPos = _characterAnimationController.value;
+          // bottom = 0.0;
         });
         print(_characterAnimationController.value);
         _characterAnimationController.stop();
@@ -219,11 +222,24 @@ class GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                   ),
                   position: timer,
                 ),
-                new SlideTransition(
+                // new SlideTransition(
+                //   child: new Container(
+                //     child: char,
+                //   ),
+                //   position: _characterPosition,
+                // )
+                new AnimatedPositioned(
                   child: new Container(
-                    child: char,
+                    child: new SlideTransition(
+                      child: new Container(
+                        child: char,
+                      ),
+                      position: _characterPosition,
+                    ),
                   ),
-                  position: _characterPosition,
+                  duration: new Duration(seconds: 3),
+                  curve: Curves.linear,
+                  bottom: bottom,
                 )
               ],
             ),
